@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Dice Roller</string>
+    <string name="roll">Girar\n</string>
+    <string name="imagen_de_dado">1</string>
+
 </resources>
