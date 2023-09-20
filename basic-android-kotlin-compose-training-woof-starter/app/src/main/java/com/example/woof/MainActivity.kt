@@ -32,6 +32,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -62,17 +63,33 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Composable
+fun WoofTopAppBar(modifier: Modifier = Modifier) {
+
+}
+
+
 /**
  * Composable that displays an app bar and a list of dogs.
  */
 @Composable
 fun WoofApp() {
-    LazyColumn {
-        items(dogs) {
-            DogItem(dog = it,
-                modifier = Modifier.padding(
-                    dimensionResource(id = R.dimen.padding_small))
-            )
+    Scaffold(
+        topBar = {
+            WoofTopAppBar()
+        }
+
+    ) {
+
+        LazyColumn(contentPadding =  it) {
+            items(dogs) {
+                DogItem(
+                    dog = it,
+                    modifier = Modifier.padding(
+                        dimensionResource(id = R.dimen.padding_small)
+                    )
+                )
+            }
         }
     }
 }
@@ -144,10 +161,12 @@ fun DogInformation(
     Column(modifier = modifier) {
         Text(
             text = stringResource(dogName),
+            style = MaterialTheme.typography.displayMedium,
             modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
         )
         Text(
             text = stringResource(R.string.years_old, dogAge),
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }
