@@ -76,6 +76,10 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel()) {
         )
 
         GameLayout(
+            userGuess = gameViewModel.userGuess,
+            currentScrambledWord = gameUiState.currentScrambledWord,
+            onUserGuessChanged = { gameViewModel.updateUserGuess(it) },
+            onKeyboardDone = { },
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -128,7 +132,12 @@ fun GameStatus(score: Int, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun GameLayout(modifier: Modifier = Modifier) {
+fun GameLayout(
+    userGuess: String,
+    currentScrambledWord: String,
+    onKeyboardDone: () -> Unit,
+    onUserGuessChanged: (String) -> Unit
+    ,modifier: Modifier = Modifier) {
     val mediumPadding = dimensionResource(R.dimen.padding_medium)
 
     Card(
@@ -151,7 +160,7 @@ fun GameLayout(modifier: Modifier = Modifier) {
                 color = colorScheme.onPrimary
             )
             Text(
-                text = "scrambleun",
+                text = currentScrambledWord,
                 style = typography.displayMedium
             )
             Text(
@@ -160,7 +169,7 @@ fun GameLayout(modifier: Modifier = Modifier) {
                 style = typography.titleMedium
             )
             OutlinedTextField(
-                value = "",
+                value =userGuess ,
                 singleLine = true,
                 shape = shapes.large,
                 modifier = Modifier.fillMaxWidth(),
@@ -169,14 +178,14 @@ fun GameLayout(modifier: Modifier = Modifier) {
                     unfocusedContainerColor = colorScheme.surface,
                     disabledContainerColor = colorScheme.surface,
                 ),
-                onValueChange = { },
+                onValueChange = onUserGuessChanged ,
                 label = { Text(stringResource(R.string.enter_your_word)) },
                 isError = false,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = { }
+                    onDone = { onKeyboardDone() }
                 )
             )
         }
