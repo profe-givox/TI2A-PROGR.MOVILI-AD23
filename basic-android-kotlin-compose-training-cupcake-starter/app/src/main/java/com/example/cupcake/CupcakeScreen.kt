@@ -15,6 +15,8 @@
  */
 package com.example.cupcake
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -115,7 +117,10 @@ fun CupcakeApp(
                     onNextButtonClicked = {
                         navController.navigate(CupcakeScreen.Pickup.name)
                                           },
-                    onCancelButtonClicked = {},
+                    onCancelButtonClicked = {
+                        cancelOrderAndNavigateToStart(
+                            viewModel = viewModel, navController=navController)
+                                            },
                     onSelectionChanged = { viewModel.setFlavor(it) }
                 )
             }
@@ -126,19 +131,28 @@ fun CupcakeApp(
                     options = uiState.pickupOptions,
                     onNextButtonClicked = {
                         navController.navigate(CupcakeScreen.Summary.name) },
-                    onCancelButtonClicked = {},
+                    onCancelButtonClicked = { cancelOrderAndNavigateToStart(
+                            viewModel = viewModel,
+                            navController = navController
+                    ) },
 
                     onSelectionChanged = { viewModel.setDate(it) }
                 )
 
             }
             composable(route = CupcakeScreen.Summary.name) {
+                val ctx = LocalContext.current
                 OrderSummaryScreen(
                     orderUiState = uiState,
-                    onCancelButtonClicked = {},
+                    onCancelButtonClicked = {
+                                            cancelOrderAndNavigateToStart(
+                                                viewModel=viewModel,
+                                                navController=navController
+                                            )
+                    },
                     onSendButtonClicked = {
                             subject: String, summary :String ->
-
+                            shareOrder(ctx, subject, summary)
                     }
 
                 )
@@ -146,4 +160,27 @@ fun CupcakeApp(
 
         }
     }
+}
+
+private fun cancelOrderAndNavigateToStart(
+    viewModel: OrderViewModel,
+    navController: NavHostController
+) {
+    viewModel.resetOrder()
+    navController.popBackStack(CupcakeScreen.Start.name, inclusive = false)
+}
+
+private fun shareOrder(context: Context, subject: String, summary: String) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_SUBJECT, subject)
+        putExtra(Intent.EXTRA_TEXT, summary)
+    }
+    context.startActivity(
+        Intent.createChooser(
+            intent,
+            context.getString(R.string.new_cupcake_order)
+        )
+    )
+
 }
