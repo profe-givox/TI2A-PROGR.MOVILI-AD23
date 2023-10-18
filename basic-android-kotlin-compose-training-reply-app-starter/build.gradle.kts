@@ -18,6 +18,7 @@
 buildscript {
     extra.apply {
         set("lifecycle_version", "2.6.1")
+        set("material3_version", "1.1.2")
     }
 }
 
